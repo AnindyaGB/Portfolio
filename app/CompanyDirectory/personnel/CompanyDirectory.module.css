@@ -1,0 +1,77 @@
+
+.page {
+  padding: 20;
+  background-color: #e2e3e5; 
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  top: 60px;
+  
+}
+
+.crud {
+  display: flex;
+  float: left;
+  gap: 6px;
+}
+
+.filters {
+  display: flex;
+  float: right;
+  padding-bottom: 20px;
+}
+
+.select {
+  width: 200px;
+  z-index: 2;
+  margin-right: 6px;
+}
+
+.selectpagnation {
+  width: 70px;
+  z-index: 2;
+}
+
+.input {
+  height: 39px;
+  width: 200px;
+  margin-right: 6px;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 800px;
+}
+
+@media (max-width: 768px) {
+  .page {
+  display: flex;
+  flex-direction: column;
+}
+
+  .filters {
+    padding-top: 20px;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  align-items: center;
+  display: grid;
+  }
+
+  .crud {
+    justify-content: flex-start;
+  }
+
+  .table {
+    min-width: 600px;
+  }
+
+  .input,
+  .select,
+  .selectpagnation {
+    width: 100%;
+  }
+}

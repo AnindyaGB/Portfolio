@@ -1,0 +1,23 @@
+.pagnation{
+  width:100%;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.navbar {
+  background-color: #30638d   ;
+  bottom: 0;
+  height: 60px;
+  z-index: 1;
+  display: flex;
+    justify-content: space-between;
+}
+
+.help {
+  color: white;
+  padding-right: 20;
+}
+
+.help:hover {
+  color: black;
+}
