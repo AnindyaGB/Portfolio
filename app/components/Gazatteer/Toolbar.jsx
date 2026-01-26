@@ -5,15 +5,11 @@ import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-easybutton/src/easy-button.js";
 import { useMeasureTool } from "./useMeasureTool";
+import { toggleBasemap } from "./basemaps";
 
 export default function Toolbar({
   onButtonClick,
-  weatherContent,
-  toggleBasemap,
-  setMoveToCountry,
-  infoContent,
-  countryInfo,
-  weatherInfo,
+  setBasemap,
   setIsMeasuring,
 }) {
   const map = useMap();
@@ -22,20 +18,15 @@ export default function Toolbar({
 
   useEffect(() => {
     if (!map) return;
-    // Store buttons so we can clean them up later
     const buttons = [];
-
-    // Country Info button
 
     buttons.push(
   L.easyButton("fa-solid fa-globe", () => {
     stopMeasuring(setIsMeasuring);
-    //if (!countryInfo?.countryName) return; // prevent opening empty
     onButtonClick("country");
   }, "Country Information").addTo(map)
 );
 
-    // Weather Info button - wrap in function to get latest state
     buttons.push(
       L.easyButton("fa-solid fa-cloud-sun", () => {
         stopMeasuring(setIsMeasuring);
@@ -43,7 +34,6 @@ export default function Toolbar({
       }, "Weather Information").addTo(map)
     );
 
-    // Measure distance button
     const measureBtn = L.easyButton(
       "fa-solid fa-ruler", () => {
       toggleMeasuring(setIsMeasuring);
@@ -52,7 +42,6 @@ export default function Toolbar({
     measureButtonRef.current = measureBtn;
     buttons.push(measureBtn);
 
-    // Fit to country button
     buttons.push(
       L.easyButton("fa-solid fa-expand", () => {
         stopMeasuring(setIsMeasuring);
@@ -60,15 +49,13 @@ export default function Toolbar({
       }, "Fit to Country").addTo(map)
     );
 
-    // Toggle basemap button
     buttons.push(
       L.easyButton("fa-solid fa-layer-group", () => {
         stopMeasuring(setIsMeasuring);
-        toggleBasemap();
+        toggleBasemap(setBasemap);
       }, "Toggle Basemap").addTo(map)
     );
 
-    // Gazetteer info button
     buttons.push(
       L.easyButton("fa-solid fa-circle-info", () => {
         stopMeasuring(setIsMeasuring);
@@ -76,13 +63,10 @@ export default function Toolbar({
       }, "Gazetteer Information").addTo(map)
     );
 
-    // Cleanup on unmount
     return () => buttons.forEach(btn => map.removeControl(btn));
 
-  // Add countryInfo and weatherInfo as dependencies so the easy button always uses latest state
-  }, [map, weatherContent, infoContent, countryInfo, weatherInfo, toggleBasemap, setMoveToCountry, stopMeasuring, toggleMeasuring, setIsMeasuring, isMeasuring]);
+  }, [map, toggleBasemap, stopMeasuring, toggleMeasuring, setIsMeasuring, isMeasuring]);
 
-  // Style measure button based on isMeasuring
   useEffect(() => {
     if (!measureButtonRef.current) return;
     const el = measureButtonRef.current.button || measureButtonRef.current._container;

@@ -1,7 +1,7 @@
 "use client";
 import styles from './Map/Map.module.css'
 
-export default function FloatingCountryCard({ countryInfo, onOpen }) {
+const FloatingCountryCard = ({ countryInfo, onOpen }) => {
   if (!countryInfo?.countryName) return null;
 
   return (
@@ -32,3 +32,5 @@ export default function FloatingCountryCard({ countryInfo, onOpen }) {
     </div>
   );
 }
+
+export default FloatingCountryCard;

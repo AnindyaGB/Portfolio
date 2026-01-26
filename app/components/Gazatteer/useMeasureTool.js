@@ -41,12 +41,10 @@ const isTouchDevice =
   const onMapClick = (e) => {
     if (!isMeasuring) return;
 
-    // If previous measurement exists → reset everything
     if (finalLine.current) {
       cleanup();
     }
 
-    // First tap → create start point
     if (!startPoint.current) {
       startPoint.current = e.latlng;
 
@@ -71,7 +69,6 @@ const isTouchDevice =
       return;
     }
 
-    // Second tap → finalize line
     finalLine.current = L.polyline(
       [startPoint.current, e.latlng],
       { color: "#2563eb", weight: 3 }
@@ -106,7 +103,7 @@ const isTouchDevice =
 
   const onMouseMove = (e) => {
     if (!isMeasuring || !startPoint.current || finalLine.current) return;
-    if (!e.latlng) return; // extra safety guard
+    if (!e.latlng) return; 
 
     const latlngs = [startPoint.current, e.latlng];
 
@@ -139,7 +136,6 @@ const isTouchDevice =
   };
 
 
-  // Cursor
   useEffect(() => {
     if (!map) return;
 
@@ -151,7 +147,6 @@ const isTouchDevice =
     };
   }, [map, isMeasuring]);
 
-  // Map events
   useEffect(() => {
     if (!map) return;
 
@@ -164,7 +159,6 @@ const isTouchDevice =
     };
   }, [map, isMeasuring]);
 
-  // Stop measuring cleanup
   useEffect(() => {
     if (!isMeasuring) cleanup();
   }, [isMeasuring]);

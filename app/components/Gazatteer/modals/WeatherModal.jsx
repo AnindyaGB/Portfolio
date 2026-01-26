@@ -2,7 +2,7 @@ import Image from "next/image";
 
 import styles from '../Map/Map.module.css'
 
-export default function WeatherModal({ countryInfo, weatherInfo }) {
+const WeatherModal = ({ countryInfo, weatherInfo }) => {
 
 if (!countryInfo?.capitalCity || !weatherInfo?.condition) return <p>Loading...</p>;
   return (
@@ -59,3 +59,5 @@ if (!countryInfo?.capitalCity || !weatherInfo?.condition) return <p>Loading...</
     </>
   );
 }
+
+export default WeatherModal;

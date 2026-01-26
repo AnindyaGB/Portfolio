@@ -1,6 +1,5 @@
 import { Outfit, Ovo } from "next/font/google";
 import "./globals.css";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const outfit = Outfit({

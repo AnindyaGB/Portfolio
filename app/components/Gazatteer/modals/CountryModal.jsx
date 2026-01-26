@@ -5,12 +5,12 @@ import Image from "next/image";
 
 import styles from '../Map/Map.module.css'
 
-export default function CountryModal({
+const CountryModal = ({
   countryInfo,
   compareCountryInfo,
   onCompare,
   listOfCountries
-}) {
+}) => {
 
   // Still loading
   if (!countryInfo || !countryInfo.countryName) {
@@ -132,3 +132,5 @@ export default function CountryModal({
     </div>
   );
 }
+
+export default CountryModal;
