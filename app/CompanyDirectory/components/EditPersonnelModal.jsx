@@ -14,9 +14,9 @@ export default function EditPersonnelModal({
 }) {
 
   const [form, setForm] = useState({
-    firstName: "",
-    lastName: "",
-    departmentID: "",
+    firstname: "",
+    lastname: "",
+    departmentid: "",
   });
   const [error, setError] = useState("");
   const [errors, setErrors] = useState({});
@@ -26,21 +26,21 @@ export default function EditPersonnelModal({
     if (!open || !personnel) return;
 
     setForm({
-      firstName: personnel.firstName,
-      lastName: personnel.lastName,
-      departmentID: personnel.departmentID,
+      firstname: personnel.firstname,
+      lastname: personnel.lastname,
+      departmentid: personnel.departmentid,
     });
   }, [open, personnel]);
 
   function validatePersonnel(form) {
     const errs = {};
 
-    if (!form.firstName.trim()) {
-      errs.firstName = "First Name is required";
+    if (!form.firstname.trim()) {
+      errs.firstname = "First Name is required";
     }
 
-    if (!form.lastName) {
-      errs.lastName = "Last Name is required";
+    if (!form.lastname) {
+      errs.lastname = "Last Name is required";
     }
 
     return errs;
@@ -63,7 +63,6 @@ export default function EditPersonnelModal({
       setIsLoading(false);
       return;
     };
-
 
     const res = await fetch(`/api/personnel/${personnel.id}`, {
       method: "PUT",
@@ -89,32 +88,32 @@ export default function EditPersonnelModal({
     body:
       <Form>
         <FormGroup>
-          <Label for="firstName">
+          <Label for="firstname">
             First Name
           </Label>
           <Input
-            id="firstName"
-            name="firstName"
+            id="firstname"
+            name="firstname"
             placeholder="First Name..."
             onChange={handleChange}
-            value={form.firstName}
-            invalid={!!errors.firstName}
+            value={form.firstname}
+            invalid={!!errors.firstname}
           />
-          <FormFeedback>{errors.firstName}</FormFeedback>
+          <FormFeedback>{errors.firstname}</FormFeedback>
         </FormGroup>
         <FormGroup>
-          <Label for="lastName">
+          <Label for="lastname">
             Last Name
           </Label>
           <Input
-            id="lastName"
-            name="lastName"
+            id="lastname"
+            name="lastname"
             placeholder="Last Name..."
             onChange={handleChange}
-            value={form.lastName}
-            invalid={!!errors.lastName}
+            value={form.lastname}
+            invalid={!!errors.lastname}
           />
-          <FormFeedback>{errors.lastName}</FormFeedback>
+          <FormFeedback>{errors.lastname}</FormFeedback>
         </FormGroup>
         <FormGroup>
           <Label for="email">
@@ -131,15 +130,15 @@ export default function EditPersonnelModal({
           />
         </FormGroup>
         <FormGroup>
-          <Label for="departmentID">
+          <Label for="departmentid">
             Department
           </Label>
           <Input
-            id="departmentID"
-            name="departmentID"
+            id="departmentid"
+            name="departmentid"
             type="select"
             onChange={handleChange}
-            value={form.departmentID}
+            value={form.departmentid}
           >
             {departments.map((d) => (
               <option key={d.value} value={d.value}>

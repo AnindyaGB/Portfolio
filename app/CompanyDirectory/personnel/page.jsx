@@ -29,11 +29,24 @@ export default function PersonnelPage() {
 
   const [showEditPersonnelModal, setShowEditPersonnelModal] = useState(false);
   const [showEditDepartmentLocationModal, setShowEditDepartmentLocationModal] = useState(false);
-
   const [selectedPersonnel, setSelectedPersonnel] = useState(null);
-
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success"
+  });
+
+  function showToast(message, type = "success") {
+    setToast({ show: true, message, type });
+
+    setTimeout(() => {
+      setToast(prev => ({ ...prev, show: false }));
+    }, 3000);
+  }
+
 
   async function fetchPersonnel() {
     setLoading(true);
@@ -46,10 +59,14 @@ export default function PersonnelPage() {
       pageSize,
     });
 
-    if (departmentID) params.append("departmentID", departmentID);
-    if (locationID) params.append("locationID", locationID);
+    if (departmentID) params.append("departmentid", departmentID);
+    if (locationID) params.append("locationid", locationID);
 
     const res = await fetch(`/api/personnel?${params}`, { cache: "no-store" });
+    if (!res.ok) {
+      showToast("Something went wrong", "danger");
+      return;
+    }
     const json = await res.json();
 
     setPersonnel(json.data);
@@ -59,12 +76,20 @@ export default function PersonnelPage() {
 
   async function fetchDepartments() {
     const res = await fetch("/api/departments");
+    if (!res.ok) {
+      showToast("Something went wrong", "danger");
+      return;
+    }
     const departmentsArray = await res.json()
     setDepartments(departmentsArray);
   }
 
   async function fetchLocations() {
     const res = await fetch("/api/locations");
+    if (!res.ok) {
+      showToast("Something went wrong", "danger");
+      return;
+    }
     const locationsArray = await res.json()
     setLocations(locationsArray);
   }
@@ -109,6 +134,28 @@ export default function PersonnelPage() {
 
   return (
     <div className={styles.page}>
+      {toast.show && (
+        <div style={{
+          position: "fixed",
+          top: 20,
+          left: "50%",
+          transform: "translateX(-50%)",
+          zIndex: 9999
+        }}>
+          <Toast>
+            <ToastHeader
+              icon={toast.type}
+              toggle={() => setToast({ ...toast, show: false })}
+            >
+              {toast.type === "success" ? "Success" : "Error"}
+            </ToastHeader>
+            <ToastBody>
+              {toast.message}
+            </ToastBody>
+          </Toast>
+        </div>
+      )}
+
       <div className={styles.crud}>
         <Button color="primary" onClick={() => setShowCreateModal(true)} >
           {'New'}
@@ -121,10 +168,23 @@ export default function PersonnelPage() {
         </Button>
       </div>
 
-      <CreateNewModal show={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={fetchAll} departments={departments} locations={locations} />
-      <DeleteModal show={showDeleteModal} onClose={onDeleteModalClose} id={selectedPersonnel} onSuccess={fetchAll} departments={departments} locations={locations} />
-      <EditDepartmentLocationModalContent show={showEditDepartmentLocationModal} onClose={() => setShowEditDepartmentLocationModal(false)} onSuccess={fetchAll} departments={departments} locations={locations} />
-      <EditPersonnelModal open={showEditPersonnelModal} personnel={selectedPersonnel} onClose={() => setShowEditPersonnelModal(false)} onUpdated={fetchPersonnel} departments={departments}/>
+      <CreateNewModal show={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={() => {
+        fetchAll();
+        showToast("Personnel created successfully");
+      }} departments={departments} locations={locations} />
+      <DeleteModal show={showDeleteModal} onClose={onDeleteModalClose} id={selectedPersonnel} onSuccess={() => {
+        fetchAll();
+        showToast("Personnel deleted successfully");
+      }} departments={departments} locations={locations} />
+      <EditDepartmentLocationModalContent show={showEditDepartmentLocationModal} onClose={() => setShowEditDepartmentLocationModal(false)} onSuccess={() => {
+        fetchAll();
+        showToast("Changes saved successfully");
+      }}
+        departments={departments} locations={locations} />
+      <EditPersonnelModal open={showEditPersonnelModal} personnel={selectedPersonnel} onClose={() => setShowEditPersonnelModal(false)} onUpdated={() => {
+        fetchPersonnel();
+        showToast("Personnel updated successfully");
+      }} departments={departments} />
 
       {/* Filters */}
       <div className={styles.filters}>
@@ -181,47 +241,47 @@ export default function PersonnelPage() {
         </Input>
       </div>
 
-<div className={styles.tableWrapper}>
-      <Table striped hover className={styles.table} >
-        <thead>
-          <tr>
-            <th onClick={() => handleSort("firstName")}>First Name{sortIndicator("firstName")}</th>
-            <th onClick={() => handleSort("lastName")}>Last Name{sortIndicator("lastName")}</th>
-            <th onClick={() => handleSort("email")}>Email Address{sortIndicator("email")}</th>
-            <th onClick={() => handleSort("departmentID")}>Department{sortIndicator("departmentID")}</th>
-            <th onClick={() => handleSort("location")}>Location{sortIndicator("location")}</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {personnel.map((p) => (
-            <tr key={p.id}>
-              <td className="align-middle">{p.firstName}</td>
-              <td className="align-middle">{p.lastName}</td>
-              <td className="align-middle">{p.email}</td>
-              <td className="align-middle">{p.department}</td>
-              <td className="align-middle">{p.location}</td>
-              <td className="align-middle">
-                <div className={styles.crud}>
-                  <Button color="success" title={'Edit Personnel'} size="sm" onClick={() => {
-                    setSelectedPersonnel(p);
-                    setShowEditPersonnelModal(true);
-                  }} >
-                    <i className="fa-solid fa-pen-to-square"></i>
-                  </Button>
-                  <Button color="danger" title={'Delete Personnel'} size="sm" onClick={() => {
-                    setSelectedPersonnel(p);
-                    setShowDeleteModal(true);
-                  }} >
-                    <i className="fa-solid fa-xmark"></i>
-                  </Button>
-                </div>
-              </td>
+      <div className={styles.tableWrapper}>
+        <Table striped hover className={styles.table} >
+          <thead>
+            <tr>
+              <th onClick={() => handleSort("firstName")}>First Name{sortIndicator("firstName")}</th>
+              <th onClick={() => handleSort("lastName")}>Last Name{sortIndicator("lastName")}</th>
+              <th onClick={() => handleSort("email")}>Email Address{sortIndicator("email")}</th>
+              <th onClick={() => handleSort("departmentID")}>Department{sortIndicator("departmentID")}</th>
+              <th onClick={() => handleSort("location")}>Location{sortIndicator("location")}</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </Table>
-</div>
+          </thead>
+          <tbody>
+            {personnel.map((p) => (
+              <tr key={p.id}>
+                <td className="align-middle">{p.firstname}</td>
+                <td className="align-middle">{p.lastname}</td>
+                <td className="align-middle">{p.email}</td>
+                <td className="align-middle">{p.department}</td>
+                <td className="align-middle">{p.location}</td>
+                <td className="align-middle">
+                  <div className={styles.crud}>
+                    <Button color="success" title={'Edit Personnel'} size="sm" onClick={() => {
+                      setSelectedPersonnel(p);
+                      setShowEditPersonnelModal(true);
+                    }} >
+                      <i className="fa-solid fa-pen-to-square"></i>
+                    </Button>
+                    <Button color="danger" title={'Delete Personnel'} size="sm" onClick={() => {
+                      setSelectedPersonnel(p);
+                      setShowDeleteModal(true);
+                    }} >
+                      <i className="fa-solid fa-xmark"></i>
+                    </Button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
       <Pagination setPage={setPage} page={page} totalPages={totalPages} />
 
 

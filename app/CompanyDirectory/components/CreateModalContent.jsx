@@ -11,11 +11,11 @@ export default function CreateNewModal(props) {
 
   const [form, setForm] = useState({
     name: "",
-    locationID: "",
-    firstName: "",
-    lastName: "",
+    locationid: "",
+    firstname: "",
+    lastname: "",
     email: "",
-    departmentID: "",
+    departmentid: "",
   });
 
   const [error, setError] = useState("");
@@ -28,12 +28,12 @@ export default function CreateNewModal(props) {
   function validatePersonnel(form) {
     const errs = {};
 
-    if (!form.firstName.trim()) {
-      errs.firstName = "First Name is required";
+    if (!form.firstname.trim()) {
+      errs.firstname = "First Name is required";
     }
 
-    if (!form.lastName) {
-      errs.lastName = "Last Name is required";
+    if (!form.lastname) {
+      errs.lastname = "Last Name is required";
     }
 
     if (!form.email) {
@@ -67,18 +67,18 @@ export default function CreateNewModal(props) {
 
   useEffect(() => {
     if (departments.length === 0 || locations.length === 0) return;
-    setForm({ ...form, departmentID: departments[0].value, locationID: locations[0].value })
+    setForm({ ...form, departmentid: departments[0].value, locationid: locations[0].value })
   }, [departments, locations])
 
     const resetForm = () => {
     setForm({
 
     name: "",
-    firstName: "",
-    lastName: "",
+    firstname: "",
+    lastname: "",
     email: "",
-    departmentID: departments[0]?.value || "",
-    locationID: locations[0]?.value || "",
+    departmentid: departments[0]?.value || "",
+    locationid: locations[0]?.value || "",
   
     })
   }
@@ -143,32 +143,32 @@ export default function CreateNewModal(props) {
     personnel:
       <Fragment>
         <FormGroup>
-          <Label for="firstName">
+          <Label for="firstname">
             First Name
           </Label>
           <Input
-            id="firstName"
-            name="firstName"
+            id="firstname"
+            name="firstname"
             placeholder="First Name..."
             onChange={handleChange}
-            value={form.firstName}
-            invalid={!!errors.firstName}
+            value={form.firstname}
+            invalid={!!errors.firstname}
           />
-          <FormFeedback>{errors.firstName}</FormFeedback>
+          <FormFeedback>{errors.firstname}</FormFeedback>
         </FormGroup>
         <FormGroup>
-          <Label for="lastName">
+          <Label for="lastname">
             Last Name
           </Label>
           <Input
-            id="lastName"
-            name="lastName"
+            id="lastname"
+            name="lastname"
             placeholder="Last Name..."
             onChange={handleChange}
-            value={form.lastName}
-            invalid={!!errors.lastName}
+            value={form.lastname}
+            invalid={!!errors.lastname}
           />
-          <FormFeedback>{errors.lastName}</FormFeedback>
+          <FormFeedback>{errors.lastname}</FormFeedback>
         </FormGroup>
         <FormGroup>
           <Label for="email">
@@ -186,15 +186,15 @@ export default function CreateNewModal(props) {
           <FormFeedback>{errors.email}</FormFeedback>
         </FormGroup>
         <FormGroup>
-          <Label for="departmentID">
+          <Label for="departmentid">
             Department
           </Label>
           <Input
-            id="departmentID"
-            name="departmentID"
+            id="departmentid"
+            name="departmentid"
             type="select"
             onChange={handleChange}
-            value={form.departmentID}
+            value={form.departmentid}
           >
             {departments.map((d) => (
               <option key={d.value} value={d.value}>
@@ -222,14 +222,14 @@ export default function CreateNewModal(props) {
           <FormFeedback>{errors.name}</FormFeedback>
         </FormGroup>
         <FormGroup>
-          <Label for="locationID">
+          <Label for="locationid">
             Location
           </Label>
           <Input
-            id="locationID"
-            name="locationID"
+            id="locationid"
+            name="locationid"
             type="select"
-            value={form.locationID}
+            value={form.locationid}
             onChange={handleChange}
           >
             {locations.map((l) => (

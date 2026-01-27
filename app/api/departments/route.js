@@ -1,25 +1,22 @@
 import { NextResponse } from "next/server";
-import { getPool } from "../../CompanyDirectory/db/db";
-import sql from "mssql";
+import db from '@/lib/db';
 
 export async function GET() {
   try {
-    const pool = await getPool();
+    const result = await db.query(`
+      SELECT
+        d.id AS value,
+        d.name AS label,
+        d.locationid,
+        l.name AS locationname
+      FROM department d
+      JOIN location l ON d.locationid = l.id
+      ORDER BY d.name
+    `);
 
-  const result = await pool.query(`
-    SELECT
-      d.id AS value,
-      d.name AS label,
-      d.locationID,
-      l.name AS locationName
-    FROM dbo.department d
-    JOIN dbo.location l ON d.locationID = l.id
-    ORDER BY d.name
-  `);
-
-    return NextResponse.json(result.recordset);
+    return NextResponse.json(result.rows);
   } catch (err) {
-    console.error(err);
+    console.error("GET departments error:", err);
     return NextResponse.json(
       { error: "Failed to fetch departments" },
       { status: 500 }
@@ -29,58 +26,52 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { name, locationID } = await request.json();
+    const { name, locationid } = await request.json();
 
-    if (!name || !locationID) {
+    // Validate input
+    if (!name || !locationid) {
       return NextResponse.json(
         { error: "Department name and location are required" },
         { status: 400 }
       );
     }
 
-    const pool = await getPool();
-
     // Check uniqueness
-    const existing = await pool
-      .request()
-      .input("name", sql.NVarChar, name)
-      .query(`
-        SELECT 1
-        FROM department
-        WHERE name = @name
-      `);
+    const existing = await db.query(
+      `SELECT 1 FROM department WHERE name = $1`,
+      [name]
+    );
 
-    if (existing.recordset.length > 0) {
+    if (existing.rows.length > 0) {
       return NextResponse.json(
         { error: "Department name already exists" },
         { status: 409 }
       );
     }
 
-    // Insert
-    await pool
-      .request()
-      .input("name", sql.NVarChar, name)
-      .input("locationID", sql.Int, locationID)
-      .query(`
-        INSERT INTO department (name, locationID)
-        VALUES (@name, @locationID)
-      `);
+    // Insert new department
+    await db.query(
+      `
+      INSERT INTO department (name, locationid)
+      VALUES ($1, $2)
+      `,
+      [name, locationid]
+    );
 
     return NextResponse.json(
       { message: "Department created" },
       { status: 201 }
     );
   } catch (err) {
-    // Handle unique index violation (race condition safety)
-    if (err.number === 2601 || err.number === 2627) {
+    // PostgreSQL unique constraint error code: 23505
+    if (err.code === '23505') {
       return NextResponse.json(
         { error: "Department name already exists" },
         { status: 409 }
       );
     }
 
-    console.error(err);
+    console.error("POST departments error:", err);
     return NextResponse.json(
       { error: "Failed to create department" },
       { status: 500 }

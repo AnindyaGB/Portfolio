@@ -1,14 +1,15 @@
 import { NextResponse } from "next/server";
-import { getPool } from "../../../CompanyDirectory/db/db";
-import sql from "mssql";
+import pool from "@/lib/db";
 
-export async function PUT(request, context) {
+// ======================
+// UPDATE LOCATION
+// ======================
+export async function PUT(request, { params }) {
   try {
-    // ✅ Next.js 15: params is async
-    const params = await context.params;
-    const id = Number(params.id);
+    const { id } = await params;
+    const locationId = Number(id);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(locationId)) {
       return NextResponse.json(
         { error: "Invalid location ID" },
         { status: 400 }
@@ -25,39 +26,34 @@ export async function PUT(request, context) {
       );
     }
 
-    const pool = await getPool();
+    // Check duplicate name (excluding self)
+    const duplicateCheck = await pool.query(
+      `
+      SELECT COUNT(*) AS count
+      FROM location
+      WHERE name = $1 AND id <> $2
+      `,
+      [name, locationId]
+    );
 
-    // 🔒 Enforce unique location name (excluding self)
-    const duplicateCheck = await pool
-      .request()
-      .input("name", sql.NVarChar(50), name)
-      .input("id", sql.Int, id)
-      .query(`
-        SELECT COUNT(*) AS count
-        FROM dbo.location
-        WHERE name = @name AND id <> @id
-      `);
-
-    if (duplicateCheck.recordset[0].count > 0) {
+    if (Number(duplicateCheck.rows[0].count) > 0) {
       return NextResponse.json(
         { error: "Location name already exists" },
         { status: 409 }
       );
     }
 
-    const result = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .input("name", sql.NVarChar(50), name)
-      .query(`
-        UPDATE dbo.location
-        SET name = @name
-        WHERE id = @id
-      `);
+    // Update location
+    const result = await pool.query(
+      `
+      UPDATE location
+      SET name = $1
+      WHERE id = $2
+      `,
+      [name, locationId]
+    );
 
-    console.log("Locations updated:", result.rowsAffected);
-
-    if (result.rowsAffected[0] === 0) {
+    if (result.rowCount === 0) {
       return NextResponse.json(
         { error: "Location not found or no changes made" },
         { status: 404 }
@@ -77,52 +73,48 @@ export async function PUT(request, context) {
   }
 }
 
-export async function DELETE(request, context) {
+// ======================
+// DELETE LOCATION
+// ======================
+export async function DELETE(request, { params }) {
   try {
-    // ✅ Next.js 15: params is async
-    const params = await context.params;
-    const id = Number(params.id);
+    const { id } = await params;
+    const locationId = Number(id);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(locationId)) {
       return NextResponse.json(
         { error: "Invalid location ID" },
         { status: 400 }
       );
     }
 
-    const pool = await getPool();
+    // Block delete if departments exist
+    const deptCheck = await pool.query(
+      `
+      SELECT COUNT(*) AS count
+      FROM department
+      WHERE locationid = $1
+      `,
+      [locationId]
+    );
 
-    // 🔒 BLOCK DELETE IF LOCATION HAS DEPARTMENTS
-    const deptCheck = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .query(`
-        SELECT COUNT(*) AS departmentCount
-        FROM dbo.department
-        WHERE locationID = @id
-      `);
-
-    if (deptCheck.recordset[0].departmentCount > 0) {
+    if (Number(deptCheck.rows[0].count) > 0) {
       return NextResponse.json(
-        {
-          error: "Location contains departments and cannot be deleted",
-        },
-        { status: 409 } // Conflict
+        { error: "Location contains departments and cannot be deleted" },
+        { status: 409 }
       );
     }
 
-    // 🗑 Safe to delete
-    const result = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .query(`
-        DELETE FROM dbo.location
-        WHERE id = @id
-      `);
+    // Delete location
+    const result = await pool.query(
+      `
+      DELETE FROM location
+      WHERE id = $1
+      `,
+      [locationId]
+    );
 
-    console.log("Locations deleted:", result.rowsAffected);
-
-    if (result.rowsAffected[0] === 0) {
+    if (result.rowCount === 0) {
       return NextResponse.json(
         { error: "Location not found" },
         { status: 404 }

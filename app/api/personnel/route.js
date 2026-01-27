@@ -1,26 +1,17 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import { getPool } from "../../CompanyDirectory/db/db";
-import sql from "mssql";
-
-const SORT_COLUMNS = {
-  firstName: "p.firstName",
-  lastName: "p.lastName",
-  email: "p.email",
-  departmentID: "p.departmentID",
-  location: "l.name",
-};
+import db from '@/lib/db';
 
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
 
     const search = searchParams.get("search") || "";
-    const departmentID = searchParams.get("departmentID");
-    const locationID = searchParams.get("locationID");
+    const departmentID = searchParams.get("departmentid");
+    const locationID = searchParams.get("locationid");
 
-    const sortBy = searchParams.get("sortBy") || "lastName";
+    const sortBy = searchParams.get("sortBy")?.toLowerCase() || "lastname";
     const order =
       searchParams.get("order")?.toUpperCase() === "DESC" ? "DESC" : "ASC";
 
@@ -28,110 +19,114 @@ export async function GET(request) {
     const pageSize = parseInt(searchParams.get("pageSize") || "10", 10);
     const offset = (page - 1) * pageSize;
 
-    const sortColumn = SORT_COLUMNS[sortBy] || SORT_COLUMNS.lastName;
+    const SORT_COLUMNS = {
+      firstname: "p.firstname",
+      lastname: "p.lastname",
+      email: "p.email",
+      departmentid: "p.departmentid",
+      location: "l.name",
+    };
+    const sortColumn = SORT_COLUMNS[sortBy] || SORT_COLUMNS.lastname;
 
-    let baseQuery = `
-      FROM personnel p
-      LEFT JOIN department d ON p.departmentID = d.id
-      LEFT JOIN location l ON d.locationID = l.id
-      WHERE 1 = 1
-    `;
-
-    const pool = await getPool();
-    const requestDb = pool.request();
+    const conditions = [];
+    const values = [];
 
     if (search) {
-      baseQuery += `
-        AND (p.firstName LIKE @search
-         OR p.lastName LIKE @search)
-      `;
-      requestDb.input("search", sql.NVarChar, `%${search}%`);
+      values.push(`%${search}%`);
+      conditions.push(`(p.firstname ILIKE $${values.length} OR p.lastname ILIKE $${values.length})`);
     }
 
     if (departmentID) {
-      baseQuery += ` AND p.departmentID = @departmentID`;
-      requestDb.input("departmentID", sql.Int, departmentID);
+      values.push(departmentID);
+      conditions.push(`p.departmentid = $${values.length}`);
     }
 
     if (locationID) {
-      baseQuery += ` AND l.id = @locationID`;
-      requestDb.input("locationID", sql.Int, locationID);
+      values.push(locationID);
+      conditions.push(`l.id = $${values.length}`);
     }
 
-    // Total count
-    const countResult = await requestDb.query(`
+    const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
+
+    // Debug: log query and values
+    console.log("VALUES:", values);
+    console.log("WHERE CLAUSE:", whereClause);
+
+    const countResult = await db.query(
+      `
       SELECT COUNT(*) AS total
-      ${baseQuery}
-    `);
+      FROM personnel p
+      LEFT JOIN department d ON p.departmentid = d.id
+      LEFT JOIN location l ON d.locationid = l.id
+      ${whereClause}
+      `,
+      values
+    );
+    const total = parseInt(countResult.rows[0].total, 10);
 
-    const total = countResult.recordset[0].total;
-
-    // Paged data
-    requestDb.input("offset", sql.Int, offset);
-    requestDb.input("pageSize", sql.Int, pageSize);
-
-    const dataResult = await requestDb.query(`
+    const dataResult = await db.query(
+      `
       SELECT
         p.id,
-        p.firstName,
-        p.lastName,
-        p.jobTitle,
+        p.firstname,
+        p.lastname,
+        p.jobtitle,
         p.email,
-        p.departmentID,
+        p.departmentid,
         d.name AS department,
-        l.id AS locationID,
+        l.id AS locationid,
         l.name AS location
-      ${baseQuery}
+      FROM personnel p
+      LEFT JOIN department d ON p.departmentid = d.id
+      LEFT JOIN location l ON d.locationid = l.id
+      ${whereClause}
       ORDER BY ${sortColumn} ${order}
-      OFFSET @offset ROWS
-      FETCH NEXT @pageSize ROWS ONLY
-    `);
+      OFFSET $${values.length + 1} LIMIT $${values.length + 2}
+      `,
+      [...values, offset, pageSize]
+    );
 
     return NextResponse.json({
-      data: dataResult.recordset,
+      data: dataResult.rows,
       total,
       page,
       pageSize,
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (err) {
-    console.error(err);
-    return NextResponse.json(
-      { error: "Failed to fetch personnel" },
-      { status: 500 }
-    );
+    console.error("GET personnel error:", err); // full error
+    return NextResponse.json({ error: "Failed to fetch personnel" }, { status: 500 });
   }
 }
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { firstName, lastName, email, departmentID } = body;
+    const { firstname, lastname, email, departmentid } = body;
 
     // Validation
-    if (!firstName || !lastName || !email || !departmentID) {
+    if (!firstname || !lastname || !email || !departmentid) {
       return NextResponse.json(
-        { error: "firstName, lastName, email, and departmentID are required" },
+        { error: "firstname, lastname, email, and departmentid are required" },
         { status: 400 }
       );
     }
 
-    const pool = await getPool();
+    // Insert personnel
+    await db.query(
+      `
+      INSERT INTO personnel (firstname, lastname, email, departmentid)
+      VALUES ($1, $2, $3, $4)
+      `,
+      [firstname, lastname, email, departmentid]
+    );
 
-    await pool
-      .request()
-      .input("firstName", sql.NVarChar, firstName)
-      .input("lastName", sql.NVarChar, lastName)
-      .input("email", sql.NVarChar, email)
-      .input("departmentID", sql.Int, departmentID)
-      .query(`
-        INSERT INTO personnel (firstName, lastName, email, departmentID)
-        VALUES (@firstName, @lastName, @email, @departmentID)
-      `);
-
-    return NextResponse.json({ message: "Personnel created" }, { status: 201 });
+    return NextResponse.json(
+      { message: "Personnel created successfully" },
+      { status: 201 }
+    );
   } catch (err) {
-    console.error(err);
+    console.error("POST personnel error:", err);
     return NextResponse.json(
       { error: "Failed to create personnel" },
       { status: 500 }

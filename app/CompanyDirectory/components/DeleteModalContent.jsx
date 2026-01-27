@@ -70,7 +70,7 @@ export default function DeleteModal(props) {
   }
 
   const deleteForm = {
-    personnel: `Are you sure you want to delete ${props.id?.firstName} ${props.id?.lastName}?`,
+    personnel: `Are you sure you want to delete ${props.id?.firstname} ${props.id?.lastname}?`,
     departments: <FormGroup>
       <Label for="departments">
         Department

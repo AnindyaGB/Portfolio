@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server";
-import { getPool } from "../../../CompanyDirectory/db/db";
-import sql from "mssql";
+import pool from "@/lib/db"; // your db.js
 
-export async function PUT(request, context) {
+// ====================
+// UPDATE DEPARTMENT
+// ====================
+export async function PUT(request, { params }) {
   try {
-    // ✅ Next.js 15: params is async
-    const params = await context.params;
-    const id = Number(params.id);
+    // Next.js 13+: params is a promise
+    const { id } = await params;
+    const departmentId = Number(id);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(departmentId)) {
       return NextResponse.json(
         { error: "Invalid department ID" },
         { status: 400 }
@@ -16,51 +18,40 @@ export async function PUT(request, context) {
     }
 
     const body = await request.json();
-    const { name, locationID } = body;
+    const { name, locationid } = body;
 
-    if (!name || !locationID) {
+    if (!name || !locationid) {
       return NextResponse.json(
         { error: "Department name and location are required" },
         { status: 400 }
       );
     }
 
-    const pool = await getPool();
+    // Check for duplicate name (excluding this department)
+    const duplicateCheck = await pool.query(
+      `SELECT COUNT(*) AS count
+       FROM department
+       WHERE name = $1 AND id <> $2`,
+      [name, departmentId]
+    );
 
-    // 🔒 Enforce unique department name (excluding self)
-    const duplicateCheck = await pool
-      .request()
-      .input("name", sql.NVarChar(50), name)
-      .input("id", sql.Int, id)
-      .query(`
-        SELECT COUNT(*) AS count
-        FROM dbo.department
-        WHERE name = @name AND id <> @id
-      `);
-
-    if (duplicateCheck.recordset[0].count > 0) {
+    if (Number(duplicateCheck.rows[0].count) > 0) {
       return NextResponse.json(
         { error: "Department name already exists" },
         { status: 409 }
       );
     }
 
-    const result = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .input("name", sql.NVarChar(50), name)
-      .input("locationID", sql.Int, locationID)
-      .query(`
-        UPDATE dbo.department
-        SET
-          name = @name,
-          locationID = @locationID
-        WHERE id = @id
-      `);
+    // Update department
+    const result = await pool.query(
+      `UPDATE department
+       SET name = $1,
+           locationid = $2
+       WHERE id = $3`,
+      [name, locationid, departmentId]
+    );
 
-    console.log("Departments updated:", result.rowsAffected);
-
-    if (result.rowsAffected[0] === 0) {
+    if (result.rowCount === 0) {
       return NextResponse.json(
         { error: "Department not found or no changes made" },
         { status: 404 }
@@ -80,51 +71,43 @@ export async function PUT(request, context) {
   }
 }
 
-
-export async function DELETE(request, context) {
+// ====================
+// DELETE DEPARTMENT
+// ====================
+export async function DELETE(request, { params }) {
   try {
-    // ✅ Next.js 15: params is async
-    const params = await context.params;
-    const id = Number(params.id);
+    const { id } = await params;
+    const departmentId = Number(id);
 
-    if (!Number.isInteger(id)) {
+    if (!Number.isInteger(departmentId)) {
       return NextResponse.json(
         { error: "Invalid department ID" },
         { status: 400 }
       );
     }
 
-    const pool = await getPool();
+    // Check if any personnel are assigned to this department
+    const check = await pool.query(
+      `SELECT COUNT(*) AS count
+       FROM personnel
+       WHERE departmentid = $1`,
+      [departmentId]
+    );
 
-    // 🔍 Check if department is in use
-    const check = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .query(`
-        SELECT COUNT(*) AS count
-        FROM dbo.personnel
-        WHERE departmentID = @id
-      `);
-
-    if (check.recordset[0].count > 0) {
+    if (Number(check.rows[0].count) > 0) {
       return NextResponse.json(
         { error: "Department is assigned to personnel and cannot be deleted" },
         { status: 409 } // Conflict
       );
     }
 
-    // 🗑 Delete department
-    const result = await pool
-      .request()
-      .input("id", sql.Int, id)
-      .query(`
-        DELETE FROM dbo.department
-        WHERE id = @id
-      `);
+    // Delete department
+    const result = await pool.query(
+      `DELETE FROM department WHERE id = $1`,
+      [departmentId]
+    );
 
-    console.log("Departments deleted:", result.rowsAffected);
-
-    if (result.rowsAffected[0] === 0) {
+    if (result.rowCount === 0) {
       return NextResponse.json(
         { error: "Department not found" },
         { status: 404 }
