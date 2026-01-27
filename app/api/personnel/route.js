@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextResponse } from "next/server";
-import db from '@/lib/db';
+import { pool } from '@/lib/db';
 
 export async function GET(request) {
   try {
@@ -52,7 +52,7 @@ export async function GET(request) {
     console.log("VALUES:", values);
     console.log("WHERE CLAUSE:", whereClause);
 
-    const countResult = await db.query(
+    const countResult = await pool.query(
       `
       SELECT COUNT(*) AS total
       FROM personnel p
@@ -64,7 +64,7 @@ export async function GET(request) {
     );
     const total = parseInt(countResult.rows[0].total, 10);
 
-    const dataResult = await db.query(
+    const dataResult = await pool.query(
       `
       SELECT
         p.id,
@@ -113,7 +113,7 @@ export async function POST(request) {
     }
 
     // Insert personnel
-    await db.query(
+    await pool.query(
       `
       INSERT INTO personnel (firstname, lastname, email, departmentid)
       VALUES ($1, $2, $3, $4)

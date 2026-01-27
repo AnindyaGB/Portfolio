@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
-import db from '@/lib/db';
+import { pool } from '@/lib/db';
 
 export async function GET() {
   try {
-    const result = await db.query(`
+    const result = await pool.query(`
       SELECT id AS value, name AS label
       FROM location
       ORDER BY name
@@ -31,7 +31,7 @@ export async function POST(request) {
     }
 
     // Check uniqueness
-    const existing = await db.query(
+    const existing = await pool.query(
       `SELECT 1 FROM location WHERE name = $1`,
       [name]
     );
@@ -44,7 +44,7 @@ export async function POST(request) {
     }
 
     // Insert and return the new ID
-    const insertResult = await db.query(
+    const insertResult = await pool.query(
       `
       INSERT INTO location (name)
       VALUES ($1)

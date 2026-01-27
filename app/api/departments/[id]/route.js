@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import pool from "@/lib/db"; // your db.js
+import { pool } from "@/lib/db"; // your db.js
 
 // ====================
 // UPDATE DEPARTMENT
