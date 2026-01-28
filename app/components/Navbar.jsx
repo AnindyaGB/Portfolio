@@ -5,7 +5,7 @@ import Image from 'next/image'
 const Navbar = () => {
 
     const [isScroll, setIsScroll] = useState(false)
-    const sideMenuRef = useRef('')
+    const sideMenuRef = useRef(null)
 
     const openMenu = () => {
         sideMenuRef.current.style.transform = 'translateX(-16rem)'
@@ -38,8 +38,9 @@ const Navbar = () => {
             <li><a href='#top'>Home</a></li>
             <li><a href='#about'>About me</a></li>
             <li><a href='#skills'>Skills</a></li>
+                        <li><a href='#projects'>Projects</a></li>
+
             <li><a href='#experience'>Experience</a></li>
-            <li><a href='#projects'>Projects</a></li>
             <li><a href='#contact'>Contact me</a></li>
         </ul>
         <div className='flex items-center gap-4'>
@@ -55,8 +56,9 @@ const Navbar = () => {
             </div>
             <li><a onClick={closeMenu} href='#top'>Home</a></li>
             <li><a onClick={closeMenu} href='#about'>About me</a></li>
+                        <li><a onClick={closeMenu} href='#projects'>Projects</a></li>
+
             <li><a onClick={closeMenu} href='#experience'>Experience</a></li>
-            <li><a onClick={closeMenu} href='#projects'>Projects</a></li>
             <li><a onClick={closeMenu} href='#contact'>Contact me</a></li>
         </ul>
       </nav>

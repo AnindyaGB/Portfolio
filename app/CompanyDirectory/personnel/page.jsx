@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback, useMemo } from "react";
-import Modal from '../components/Modal';
+import { useEffect, useState } from "react";
 import EditPersonnelModal from '../components/EditPersonnelModal';
 import styles from './CompanyDirectory.module.css'
-import Select from 'react-select'
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import CreateNewModal from '../components/CreateModalContent';
 import DeleteModal from "../components/DeleteModalContent";
@@ -20,7 +18,7 @@ export default function PersonnelPage() {
   const [search, setSearch] = useState("");
   const [departmentID, setDepartmentID] = useState("");
   const [locationID, setLocationID] = useState("");
-  const [sortBy, setSortBy] = useState("lastName");
+  const [sortBy, setSortBy] = useState("lastname");
   const [order, setOrder] = useState("ASC");
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
@@ -113,7 +111,6 @@ export default function PersonnelPage() {
       setSortBy(column);
       setOrder("ASC");
     }
-    setTimeout(fetchPersonnel, 0);
   }
 
   function sortIndicator(column) {
@@ -245,16 +242,23 @@ export default function PersonnelPage() {
         <Table striped hover className={styles.table} >
           <thead>
             <tr>
-              <th onClick={() => handleSort("firstName")}>First Name{sortIndicator("firstName")}</th>
-              <th onClick={() => handleSort("lastName")}>Last Name{sortIndicator("lastName")}</th>
+              <th onClick={() => handleSort("firstname")}>First Name{sortIndicator("firstname")}</th>
+              <th onClick={() => handleSort("lastname")}>Last Name{sortIndicator("lastname")}</th>
               <th onClick={() => handleSort("email")}>Email Address{sortIndicator("email")}</th>
-              <th onClick={() => handleSort("departmentID")}>Department{sortIndicator("departmentID")}</th>
+              <th onClick={() => handleSort("departmentid")}>Department{sortIndicator("departmentid")}</th>
               <th onClick={() => handleSort("location")}>Location{sortIndicator("location")}</th>
               <th></th>
             </tr>
           </thead>
           <tbody>
-            {personnel.map((p) => (
+            {personnel.length === 0 ? (
+        <tr>
+          <td colSpan="6" className={styles.emptyState}>
+            No personnel match your search.
+          </td>
+        </tr>
+      ) : (
+            personnel.map((p) => (
               <tr key={p.id}>
                 <td className="align-middle">{p.firstname}</td>
                 <td className="align-middle">{p.lastname}</td>
@@ -278,7 +282,7 @@ export default function PersonnelPage() {
                   </div>
                 </td>
               </tr>
-            ))}
+            )))}
           </tbody>
         </Table>
       </div>

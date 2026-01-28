@@ -4,7 +4,7 @@ import React from 'react'
 
 export default function Experience() {
   return (
-    <div id='experience' className='w-full px-[12%] py-10 scroll-mt-20'>
+    <div id='experience' className='w-full px-5 sm:px-10 lg:px-[12%] py-10 scroll-mt-20'>
       <h4 className='text-center mb-2 text-lg font-Ovo'>Employment History</h4>
       <h2 className='text-center text-5xl font-Ovo'>Engineering Experience</h2>
 

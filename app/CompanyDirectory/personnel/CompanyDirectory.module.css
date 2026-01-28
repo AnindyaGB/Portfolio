@@ -1,12 +1,11 @@
-
 .page {
   padding: 20;
-  background-color: #e2e3e5; 
+  background-color: #e2e3e5;
   position: absolute;
   width: 100%;
   bottom: 0;
   top: 60px;
-  
+
 }
 
 .crud {
@@ -49,16 +48,16 @@
 
 @media (max-width: 768px) {
   .page {
-  display: flex;
-  flex-direction: column;
-}
+    display: flex;
+    flex-direction: column;
+  }
 
   .filters {
     padding-top: 20px;
     grid-template-columns: 1fr;
     gap: 0.75rem;
-  align-items: center;
-  display: grid;
+    align-items: center;
+    display: grid;
   }
 
   .crud {
@@ -74,4 +73,12 @@
   .selectpagnation {
     width: 100%;
   }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+  font-style: italic;
+  font-size: 1rem;
 }
