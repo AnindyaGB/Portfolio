@@ -1,23 +1,24 @@
 .page {
-  padding: 20;
   background-color: #e2e3e5;
-  position: absolute;
   width: 100%;
-  bottom: 0;
-  top: 60px;
-
+  padding: 0 20px;
+  background-color: #e2e3e5;
+  min-height: calc(100vh - 60px);
 }
 
 .crud {
   display: flex;
-  float: left;
   gap: 6px;
+}
+
+.crud button {
 }
 
 .filters {
   display: flex;
-  float: right;
-  padding-bottom: 20px;
+  padding-bottom: 0;
+  gap: 0.5rem;
+  align-items: center;  
 }
 
 .select {
@@ -31,8 +32,14 @@
   z-index: 2;
 }
 
+@media (max-width: 768px) {
+  .selectpagnation {
+    display: none !important;
+  }
+}
+
 .input {
-  height: 39px;
+  height: 38px;
   width: 200px;
   margin-right: 6px;
 }
@@ -43,7 +50,7 @@
 }
 
 .table {
-  min-width: 800px;
+  min-width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -53,7 +60,6 @@
   }
 
   .filters {
-    padding-top: 20px;
     grid-template-columns: 1fr;
     gap: 0.75rem;
     align-items: center;
@@ -81,4 +87,88 @@
   color: #777;
   font-style: italic;
   font-size: 1rem;
+}
+
+/* Mobile cards hidden by default */
+.mobileList {
+  display: none;
+}
+
+/* Hide table on mobile */
+@media (max-width: 768px) {
+  .tableWrapper {
+    display: none;
+  }
+
+  .mobileList {
+    display: grid;
+    gap: 1rem;
+  }
+}
+
+/* Card styling */
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.cardRow span:first-child {
+  font-weight: 600;
+  color: #555;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Sticky container */
+.filterBar {
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+
+  background: #e2e3e5;
+  padding: 0.75rem 0;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;   /* ✅ KEY FIX */
+  gap: 1rem;
+}
+
+/* Mobile layout */
+@media (max-width: 768px) {
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+}
+
+/* Hide pagination on mobile */
+@media (max-width: 768px) {
+  .paginationWrapper {
+    display: none;
+  }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import EditPersonnelModal from '../components/EditPersonnelModal';
 import styles from './CompanyDirectory.module.css'
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -36,6 +36,14 @@ export default function PersonnelPage() {
     message: "",
     type: "success"
   });
+  const [isMobile, setIsMobile] = useState(false);
+  const loaderRef = useRef(null);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   function showToast(message, type = "success") {
     setToast({ show: true, message, type });
@@ -44,6 +52,36 @@ export default function PersonnelPage() {
       setToast(prev => ({ ...prev, show: false }));
     }, 3000);
   }
+
+  useEffect(() => {
+    setPage(1);
+  }, [search, departmentID, locationID, sortBy, order]);
+
+  useEffect(() => {
+  setPage(1);
+  setPersonnel([]);
+}, [isMobile])
+
+useEffect(() => {
+  if (!isMobile) return;
+
+  const observer = new IntersectionObserver(entries => {
+    if (
+      entries[0].isIntersecting &&
+      !loading &&
+      page < totalPages
+    ) {
+      setPage(p => p + 1);
+    }
+  });
+
+  if (loaderRef.current) {
+    observer.observe(loaderRef.current);
+  }
+
+  return () => observer.disconnect();
+}, [isMobile, page, totalPages, loading]);
+
 
 
   async function fetchPersonnel() {
@@ -67,7 +105,13 @@ export default function PersonnelPage() {
     }
     const json = await res.json();
 
-    setPersonnel(json.data);
+    setPersonnel(prev => {
+  if (isMobile) {
+    return page === 1 ? json.data : [...prev, ...json.data];
+  } else {
+    return json.data;
+  }
+});
     setTotalPages(json.totalPages);
     setLoading(false);
   }
@@ -152,19 +196,74 @@ export default function PersonnelPage() {
           </Toast>
         </div>
       )}
+      <div className={styles.filterBar}>
+        <div className={styles.crud}>
+          <Button color="primary" onClick={() => setShowCreateModal(true)} >
+            {'New'}
+          </Button>
+          <Button color="success" onClick={() => setShowEditDepartmentLocationModal(true)} >
+            {'Edit'}
+          </Button>
+          <Button color="danger" onClick={() => setShowDeleteModal(true)} >
+            {'Delete'}
+          </Button>
+        </div>
 
-      <div className={styles.crud}>
-        <Button color="primary" onClick={() => setShowCreateModal(true)} >
-          {'New'}
-        </Button>
-        <Button color="success" onClick={() => setShowEditDepartmentLocationModal(true)} >
-          {'Edit'}
-        </Button>
-        <Button color="danger" onClick={() => setShowDeleteModal(true)} >
-          {'Delete'}
-        </Button>
+        {/* Filters */}
+        <div className={styles.filters}>
+          <Input
+            placeholder="Search name"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className={styles.input}
+          />
+          <Input
+            id="deptFilter"
+            name="deptFilter"
+            type="select"
+            onChange={e => setDepartmentID(e.target.value)}
+            value={departmentID}
+            className={styles.select}
+          >
+            {filterDepartments.map(d => (
+              <option key={d.value} value={d.value}>
+                {d.label}
+              </option>
+            ))}
+          </Input>
+          <Input
+            id="locFilter"
+            name="locFilter"
+            type="select"
+            onChange={e => setLocationID(e.target.value)}
+            value={locationID}
+            className={styles.select}
+          >
+            {filterLocations.map(l => (
+              <option key={l.value} value={l.value}>
+                {l.label}
+              </option>
+            ))}
+          </Input>
+          <Input
+            id="pagination"
+            name="pagination"
+            type="select"
+            onChange={e => {
+              setPageSize(e.target.value);
+              setPage(1);
+            }}
+            value={pageSize}
+            className={styles['selectpagnation']}
+          >
+            {[{ value: 5, label: '5' }, { value: 10, label: '10' }, { value: 25, label: '25' }, { value: 50, label: '50' }].map(l => (
+              <option key={l.value} value={l.value}>
+                {l.label}
+              </option>
+            ))}
+          </Input>
+        </div>
       </div>
-
       <CreateNewModal show={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={() => {
         fetchAll();
         showToast("Personnel created successfully");
@@ -183,60 +282,6 @@ export default function PersonnelPage() {
         showToast("Personnel updated successfully");
       }} departments={departments} />
 
-      {/* Filters */}
-      <div className={styles.filters}>
-        <Input
-          placeholder="Search name"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className={styles.input}
-        />
-        <Input
-          id="deptFilter"
-          name="deptFilter"
-          type="select"
-          onChange={e => setDepartmentID(e.target.value)}
-          value={departmentID}
-          className={styles.select}
-        >
-          {filterDepartments.map(d => (
-            <option key={d.value} value={d.value}>
-              {d.label}
-            </option>
-          ))}
-        </Input>
-        <Input
-          id="locFilter"
-          name="locFilter"
-          type="select"
-          onChange={e => setLocationID(e.target.value)}
-          value={locationID}
-          className={styles.select}
-        >
-          {filterLocations.map(l => (
-            <option key={l.value} value={l.value}>
-              {l.label}
-            </option>
-          ))}
-        </Input>
-        <Input
-          id="pagination"
-          name="pagination"
-          type="select"
-          onChange={e => {
-            setPageSize(e.target.value);
-            setPage(1);
-          }}
-          value={pageSize}
-          className={styles['selectpagnation']}
-        >
-          {[{ value: 5, label: '5' }, { value: 10, label: '10' }, { value: 25, label: '25' }, { value: 50, label: '50' }].map(l => (
-            <option key={l.value} value={l.value}>
-              {l.label}
-            </option>
-          ))}
-        </Input>
-      </div>
 
       <div className={styles.tableWrapper}>
         <Table striped hover className={styles.table} >
@@ -252,42 +297,100 @@ export default function PersonnelPage() {
           </thead>
           <tbody>
             {personnel.length === 0 ? (
-        <tr>
-          <td colSpan="6" className={styles.emptyState}>
-            No personnel match your search.
-          </td>
-        </tr>
-      ) : (
-            personnel.map((p) => (
-              <tr key={p.id}>
-                <td className="align-middle">{p.firstname}</td>
-                <td className="align-middle">{p.lastname}</td>
-                <td className="align-middle">{p.email}</td>
-                <td className="align-middle">{p.department}</td>
-                <td className="align-middle">{p.location}</td>
-                <td className="align-middle">
-                  <div className={styles.crud}>
-                    <Button color="success" title={'Edit Personnel'} size="sm" onClick={() => {
-                      setSelectedPersonnel(p);
-                      setShowEditPersonnelModal(true);
-                    }} >
-                      <i className="fa-solid fa-pen-to-square"></i>
-                    </Button>
-                    <Button color="danger" title={'Delete Personnel'} size="sm" onClick={() => {
-                      setSelectedPersonnel(p);
-                      setShowDeleteModal(true);
-                    }} >
-                      <i className="fa-solid fa-xmark"></i>
-                    </Button>
-                  </div>
+              <tr>
+                <td colSpan="6" className={styles.emptyState}>
+                  No personnel match your search.
                 </td>
               </tr>
-            )))}
+            ) : (
+              personnel.map((p) => (
+                <tr key={p.id}>
+                  <td className="align-middle">{p.firstname}</td>
+                  <td className="align-middle">{p.lastname}</td>
+                  <td className="align-middle">{p.email}</td>
+                  <td className="align-middle">{p.department}</td>
+                  <td className="align-middle">{p.location}</td>
+                  <td className="align-middle">
+                    <div className={styles.crud}>
+                      <Button color="success" title={'Edit Personnel'} size="sm" onClick={() => {
+                        setSelectedPersonnel(p);
+                        setShowEditPersonnelModal(true);
+                      }} >
+                        <i className="fa-solid fa-pen-to-square"></i>
+                      </Button>
+                      <Button color="danger" title={'Delete Personnel'} size="sm" onClick={() => {
+                        setSelectedPersonnel(p);
+                        setShowDeleteModal(true);
+                      }} >
+                        <i className="fa-solid fa-xmark"></i>
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              )))}
           </tbody>
         </Table>
       </div>
-      <Pagination setPage={setPage} page={page} totalPages={totalPages} />
+      {/* Mobile Cards */}
+      <div className={styles.mobileList}>
+        {personnel.length === 0 ? (
+          <div className={styles.emptyState}>
+            No personnel match your search.
+          </div>
+        ) : (
+          personnel.map(p => (
+            <div key={p.id} className={styles.card}>
+              <div className={styles.cardHeader}>
+                <strong>{p.firstname} {p.lastname}</strong>
+              </div>
 
+              <div className={styles.cardRow}>
+                <span>Email:</span>
+                <span>{p.email}</span>
+              </div>
+
+              <div className={styles.cardRow}>
+                <span>Department:</span>
+                <span>{p.department}</span>
+              </div>
+
+              <div className={styles.cardRow}>
+                <span>Location:</span>
+                <span>{p.location}</span>
+              </div>
+
+              <div className={styles.cardActions}>
+                <Button
+                  size="sm"
+                  color="success"
+                  onClick={() => {
+                    setSelectedPersonnel(p);
+                    setShowEditPersonnelModal(true);
+                  }}
+                >
+                  Edit
+                </Button>
+
+                <Button
+                  size="sm"
+                  color="danger"
+                  onClick={() => {
+                    setSelectedPersonnel(p);
+                    setShowDeleteModal(true);
+                  }}
+                >
+                  Delete
+                </Button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      {isMobile && <div ref={loaderRef} style={{ height: 1 }} />}
+
+      <div className={styles.paginationWrapper}>
+        <Pagination setPage={setPage} page={page} totalPages={totalPages} />
+      </div>
 
     </div>
   );
