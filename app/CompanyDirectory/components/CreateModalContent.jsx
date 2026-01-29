@@ -1,6 +1,6 @@
 
-import React, { useCallback, useState, useEffect, Fragment } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from "reactstrap";
+import React, { useState, useEffect, Fragment } from "react";
+import { Form, FormGroup, Label, Input, FormFeedback } from "reactstrap";
 import CreateModal from './Modal';
 
 export default function CreateNewModal(props) {
@@ -22,10 +22,11 @@ export default function CreateNewModal(props) {
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false)
 
-  function isValidEmail(email) {
+  const isValidEmail = (email) => {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   }
-  function validatePersonnel(form) {
+
+  const validatePersonnel = (form) => {
     const errs = {};
 
     if (!form.firstname.trim()) {
@@ -45,7 +46,7 @@ export default function CreateNewModal(props) {
     return errs;
   }
 
-  function validateDepartments(form) {
+  const validateDepartments = (form) => {
     const errs = {};
 
     if (!form.name.trim()) {
@@ -55,7 +56,7 @@ export default function CreateNewModal(props) {
     return errs;
   }
 
-    function validateLocations(form) {
+    const validateLocations = (form) => {
     const errs = {};
 
     if (!form.name.trim()) {
@@ -88,20 +89,22 @@ export default function CreateNewModal(props) {
     setCreateType('personnel')
     setIsLoading(false)
     setErrors({});
+    setError('')
     resetForm()
   }
 
   const createWhat = e => {
     setCreateType(e)
     setErrors({});
+    setError('')
     resetForm()
   }
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setIsLoading(true)
@@ -131,6 +134,7 @@ export default function CreateNewModal(props) {
     if (!res.ok) {
       const err = await res.json();
       setError(err.error || "Failed to create");
+      setIsLoading(false)
       return;
     }
 

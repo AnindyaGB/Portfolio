@@ -30,7 +30,6 @@ export async function POST(request) {
       );
     }
 
-    // Check uniqueness
     const existing = await pool.query(
       `SELECT 1 FROM location WHERE name = $1`,
       [name]
@@ -43,7 +42,6 @@ export async function POST(request) {
       );
     }
 
-    // Insert and return the new ID
     const insertResult = await pool.query(
       `
       INSERT INTO location (name)
@@ -58,7 +56,6 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (err) {
-    // PostgreSQL unique constraint violation code: 23505
     if (err.code === '23505') {
       return NextResponse.json(
         { error: "Location already exists" },

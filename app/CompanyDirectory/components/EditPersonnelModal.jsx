@@ -1,7 +1,7 @@
 "use client";
 
-import { Fragment, useEffect, useState } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from "reactstrap";
+import { useEffect, useState } from "react";
+import { Form, FormGroup, Label, Input, FormFeedback } from "reactstrap";
 import CreateModal from './Modal';
 
 
@@ -32,7 +32,7 @@ export default function EditPersonnelModal({
     });
   }, [open, personnel]);
 
-  function validatePersonnel(form) {
+  const validatePersonnel = (form) => {
     const errs = {};
 
     if (!form.firstname.trim()) {
@@ -46,11 +46,11 @@ export default function EditPersonnelModal({
     return errs;
   }
 
-  function handleChange(e) {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
   setIsLoading(true)

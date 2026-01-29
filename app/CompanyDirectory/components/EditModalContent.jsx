@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from 'react'
-import { Button, Form, FormGroup, Label, Input, FormText, FormFeedback } from "reactstrap";
+import { Form, FormGroup, Label, Input, FormFeedback } from "reactstrap";
 import CreateModal from './Modal';
 
 export default function EditDepartmentLocationModalContent(props) {
@@ -10,52 +10,52 @@ export default function EditDepartmentLocationModalContent(props) {
 
   const [departmentForm, setDepartmentForm] = useState({
     name: "",
-    locationID: "",
-    departmentID: "",
+    locationid: "",
+    departmentid: "",
   });
   const [locationForm, setLocationForm] = useState({
     name: "",
-    locationID: "",
+    locationid: "",
   });
   const [error, setError] = useState("");
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false)
 
-  function validateDepartment(form) {
-  const errs = {};
+  const validateDepartment = (form) => {
+    const errs = {};
 
-  if (!form.name.trim()) {
-    errs.name = "Department name is required";
+    if (!form.name.trim()) {
+      errs.name = "Department name is required";
+    }
+
+    if (!form.locationid) {
+      errs.locationid = "Location is required";
+    }
+
+    return errs;
   }
 
-  if (!form.locationID) {
-    errs.locationID = "Location is required";
+  const validateLocation = (form) => {
+    const errs = {};
+
+    if (!form.name.trim()) {
+      errs.name = "Location name is required";
+    }
+
+    return errs;
   }
-
-  return errs;
-}
-
-function validateLocation(form) {
-  const errs = {};
-
-  if (!form.name.trim()) {
-    errs.name = "Location name is required";
-  }
-
-  return errs;
-}
 
 
   const resetForm = () => {
     if (!departments.length || !locations.length) return;
     setDepartmentForm({
-      locationID: departments[0].locationID,
+      locationid: departments[0].locationid,
       name: departments[0].label,
-      departmentID: departments[0].value,
+      departmentid: departments[0].value,
     });
     setLocationForm({
       name: locations[0].label,
-      locationID: locations[0].value,
+      locationid: locations[0].value,
     })
   };
   const editWhat = e => {
@@ -78,54 +78,57 @@ function validateLocation(form) {
   }, [departments, locations]);
 
 
-  function handleDepartmentChange(e) {
+  const handleDepartmentChange = (e) => {
     setDepartmentForm(prev => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   }
 
-  function handleLocationFormChange(e) {
+  const handleLocationFormChange = (e) => {
     setLocationForm({ ...locationForm, [e.target.name]: e.target.value });
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-setIsLoading(true)
-      let validationErrors = {};
+    setIsLoading(true)
 
-  if (editType === "departments") {
-    validationErrors = validateDepartment(departmentForm);
-  } else {
-    validationErrors = validateLocation(locationForm);
-  }
+    let validationErrors = {};
 
-  setErrors(validationErrors);
+    if (editType === "departments") {
+      validationErrors = validateDepartment(departmentForm);
+    } else {
+      validationErrors = validateLocation(locationForm);
+    }
 
-  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+
+    if (Object.keys(validationErrors).length > 0) {
       setIsLoading(false)
       return;
     }
-    
+
     if (editType === "departments") {
-      const res = await fetch(`/api/departments/${departmentForm.departmentID}`, {
+      const res = await fetch(`/api/departments/${departmentForm.departmentid}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: departmentForm.name,
-          locationID: Number(departmentForm.locationID),
+          locationid: Number(departmentForm.locationid),
         }),
       });
 
       if (!res.ok) {
-        setError("Failed to update department");
+        const err = await res.json();
+        setError(err.error || "Failed to update department");
+        setIsLoading(false);
         return;
       }
     }
 
     if (editType === "locations") {
-      const res = await fetch(`/api/locations/${locationForm.locationID}`, {
+      const res = await fetch(`/api/locations/${locationForm.locationid}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -134,7 +137,9 @@ setIsLoading(true)
       });
 
       if (!res.ok) {
-        setError("Failed to update location");
+        const err = await res.json();
+        setError(err.error || "Failed to update location");
+        setIsLoading(false)
         return;
       }
     }
@@ -153,16 +158,16 @@ setIsLoading(true)
           id="departmentID"
           name="departmentID"
           type="select"
-          value={departmentForm.departmentID}
+          value={departmentForm.departmentid}
           onChange={(e) => {
             const selected = departments.find(
               d => d.value === Number(e.target.value)
             );
 
             setDepartmentForm({
-              departmentID: selected.value,
+              departmentid: selected.value,
               name: selected.label,
-              locationID: selected.locationID,
+              locationid: selected.locationid,
             });
           }}
         >
@@ -188,15 +193,15 @@ setIsLoading(true)
         <FormFeedback>{errors.name}</FormFeedback>
       </FormGroup>
       <FormGroup>
-        <Label for="locationID">
+        <Label for="locationid">
           Location
         </Label>
         <Input
-          id="locationID"
-          name="locationID"
+          id="locationid"
+          name="locationid"
           type="select"
           onChange={handleDepartmentChange}
-          value={departmentForm.locationID}
+          value={departmentForm.locationid}
         >
           {locations.map((l) => (
             <option key={l.value} value={l.value}>
@@ -209,14 +214,14 @@ setIsLoading(true)
     locations:
       <Fragment>
         <FormGroup>
-          <Label for="locationID">
+          <Label for="locationid">
             Location
           </Label>
           <Input
-            id="locationID"
-            name="locationID"
+            id="locationid"
+            name="locationid"
             type="select"
-            value={locationForm.locationID}
+            value={locationForm.locationid}
             onChange={(e) => {
               const selectedLocation = locations.find(
                 l => l.value === Number(e.target.value)
@@ -224,7 +229,7 @@ setIsLoading(true)
 
               setLocationForm({
                 name: selectedLocation.label,
-                locationID: selectedLocation.value,
+                locationid: selectedLocation.value,
               });
             }}
           >
@@ -278,10 +283,6 @@ setIsLoading(true)
   }
 
   return (
-    <CreateModal content={modalContent} onSubmit={handleSubmit} show={props.show} onClose={onClose} error={error} isLoading={isLoading}  disableSubmit={
-    editType === "departments"
-      ? Object.keys(validateDepartment(departmentForm)).length > 0
-      : Object.keys(validateLocation(locationForm)).length > 0
-  }/>
+    <CreateModal content={modalContent} onSubmit={handleSubmit} show={props.show} onClose={onClose} error={error} isLoading={isLoading} />
   )
 }

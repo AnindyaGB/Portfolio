@@ -28,7 +28,6 @@ export async function POST(request) {
   try {
     const { name, locationid } = await request.json();
 
-    // Validate input
     if (!name || !locationid) {
       return NextResponse.json(
         { error: "Department name and location are required" },
@@ -36,7 +35,6 @@ export async function POST(request) {
       );
     }
 
-    // Check uniqueness
     const existing = await pool.query(
       `SELECT 1 FROM department WHERE name = $1`,
       [name]
@@ -49,7 +47,6 @@ export async function POST(request) {
       );
     }
 
-    // Insert new department
     await pool.query(
       `
       INSERT INTO department (name, locationid)
@@ -63,7 +60,7 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (err) {
-    // PostgreSQL unique constraint error code: 23505
+
     if (err.code === '23505') {
       return NextResponse.json(
         { error: "Department name already exists" },

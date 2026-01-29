@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
 import {pool} from "@/lib/db";
 
-// ======================
-// UPDATE LOCATION
-// ======================
 export async function PUT(request, { params }) {
   try {
     const { id } = await params;
@@ -26,7 +23,6 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Check duplicate name (excluding self)
     const duplicateCheck = await pool.query(
       `
       SELECT COUNT(*) AS count
@@ -43,7 +39,6 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Update location
     const result = await pool.query(
       `
       UPDATE location
@@ -73,9 +68,7 @@ export async function PUT(request, { params }) {
   }
 }
 
-// ======================
-// DELETE LOCATION
-// ======================
+
 export async function DELETE(request, { params }) {
   try {
     const { id } = await params;
@@ -88,7 +81,6 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Block delete if departments exist
     const deptCheck = await pool.query(
       `
       SELECT COUNT(*) AS count
@@ -105,7 +97,6 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Delete location
     const result = await pool.query(
       `
       DELETE FROM location

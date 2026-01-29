@@ -48,10 +48,6 @@ export async function GET(request) {
 
     const whereClause = conditions.length ? `WHERE ${conditions.join(" AND ")}` : "";
 
-    // Debug: log query and values
-    console.log("VALUES:", values);
-    console.log("WHERE CLAUSE:", whereClause);
-
     const countResult = await pool.query(
       `
       SELECT COUNT(*) AS total
@@ -94,7 +90,7 @@ export async function GET(request) {
       totalPages: Math.ceil(total / pageSize),
     });
   } catch (err) {
-    console.error("GET personnel error:", err); // full error
+    console.error("GET personnel error:", err); 
     return NextResponse.json({ error: "Failed to fetch personnel" }, { status: 500 });
   }
 }
@@ -104,7 +100,6 @@ export async function POST(request) {
     const body = await request.json();
     const { firstname, lastname, email, departmentid } = body;
 
-    // Validation
     if (!firstname || !lastname || !email || !departmentid) {
       return NextResponse.json(
         { error: "firstname, lastname, email, and departmentid are required" },
@@ -112,7 +107,18 @@ export async function POST(request) {
       );
     }
 
-    // Insert personnel
+    const existing = await pool.query(
+      `SELECT 1 FROM personnel WHERE email = $1`,
+      [email]
+    );
+
+    if (existing.rows.length > 0) {
+      return NextResponse.json(
+        { error: "Personnel Email Address already exists" },
+        { status: 409 }
+      );
+    }
+
     await pool.query(
       `
       INSERT INTO personnel (firstname, lastname, email, departmentid)
@@ -126,6 +132,13 @@ export async function POST(request) {
       { status: 201 }
     );
   } catch (err) {
+    if (err.code === '23505') {
+      return NextResponse.json(
+        { error: "Personnel Email Address already exists" },
+        { status: 409 }
+      );
+    }
+
     console.error("POST personnel error:", err);
     return NextResponse.json(
       { error: "Failed to create personnel" },

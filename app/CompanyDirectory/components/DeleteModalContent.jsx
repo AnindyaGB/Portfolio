@@ -1,6 +1,6 @@
 
-import React, { useCallback, useState, useEffect, Fragment } from "react";
-import { Button, Form, FormGroup, Label, Input, FormText } from "reactstrap";
+import React, { useState, useEffect, Fragment } from "react";
+import { FormGroup, Label, Input } from "reactstrap";
 import CreateModal from './Modal';
 
 export default function DeleteModal(props) {
@@ -27,32 +27,41 @@ export default function DeleteModal(props) {
     }
   }, [props.id])
 
-  function handleChange(e) {
+  const resetForm = () => {
+    if (!departments.length || !locations.length) return;
+    setForm({
+      locations: locations[0].value,
+      departments: departments[0].value,
+    });
+  };
+
+  useEffect(() => {
+    if (departments.length === 0 || locations.length === 0) return;
+    resetForm()
+  }, [departments, locations]);
+
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   }
 
   const deleteWhat = e => {
     setDeleteType(e)
-    setForm({
-      locations: "",
-      departments: ""
-    })
+    setError('');
+    resetForm()
   }
 
   const onClose = () => {
     props.onClose()
     setDeleteType('departments')
     setIsLoading(false)
-    setForm({
-      locations: "",
-      departments: ""
-    })
+    setError('')
+    resetForm()
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  setIsLoading(true);
+    setIsLoading(true);
     const res = await fetch(`/api/${deleteType}/${form[deleteType]}`, {
       method: "DELETE",
       cache: "no-store",
@@ -60,7 +69,9 @@ export default function DeleteModal(props) {
 
     if (!res.ok) {
       const error = await res.json();
-      throw new Error(error.error || "Failed to delete personnel");
+      setError(error.error || "Failed to delete");
+      setIsLoading(false)
+      return;
     }
 
     props.onSuccess()

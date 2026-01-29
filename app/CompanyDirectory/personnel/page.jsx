@@ -208,8 +208,6 @@ useEffect(() => {
             {'Delete'}
           </Button>
         </div>
-
-        {/* Filters */}
         <div className={styles.filters}>
           <Input
             placeholder="Search name"
@@ -266,11 +264,11 @@ useEffect(() => {
       </div>
       <CreateNewModal show={showCreateModal} onClose={() => setShowCreateModal(false)} onSuccess={() => {
         fetchAll();
-        showToast("Personnel created successfully");
+        showToast("Creation Successful");
       }} departments={departments} locations={locations} />
       <DeleteModal show={showDeleteModal} onClose={onDeleteModalClose} id={selectedPersonnel} onSuccess={() => {
         fetchAll();
-        showToast("Personnel deleted successfully");
+        showToast("Delete Successful");
       }} departments={departments} locations={locations} />
       <EditDepartmentLocationModalContent show={showEditDepartmentLocationModal} onClose={() => setShowEditDepartmentLocationModal(false)} onSuccess={() => {
         fetchAll();
@@ -331,7 +329,6 @@ useEffect(() => {
           </tbody>
         </Table>
       </div>
-      {/* Mobile Cards */}
       <div className={styles.mobileList}>
         {personnel.length === 0 ? (
           <div className={styles.emptyState}>

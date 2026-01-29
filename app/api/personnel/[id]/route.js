@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import {pool} from "@/lib/db"; // your db.js
+import {pool} from "@/lib/db";
 
 export async function PUT(request, { params }) {
-  // params is a Promise in Next.js 13+ App Router
+
   const { id } = await params;
 
   const personnelId = Number(id);

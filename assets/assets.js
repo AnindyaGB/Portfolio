@@ -91,7 +91,7 @@ export const projects = [
         title: "Company Directory — Full-Stack Web Application",
         subtitle: "(Next.js, Node.js, PostgreSQL, JavaScript, Vercel)",
         text: "Company Directory a full-stack company management system supporting CRUD operations for personnel, departments, and locations.",
-        image: '/gazatteer.png',
+        image: '/companydirectory.png',
         githubUrl: "https://github.com/you/repo",
         links: [
       { label: "Try it out", href: '/CompanyDirectory' },
