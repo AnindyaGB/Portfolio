@@ -86,8 +86,7 @@ export const projects = [
 'Designed and developed a responsive user interface optimized for desktop and mobile devices.',
 'Structured the application using reusable React components and modern JavaScript patterns.',
 'Deployed and hosted the application on Vercel with production build configuration and environment variables.'
-
-        ]
+    ]
     },
     {
         id: "company-directory",
@@ -157,16 +156,15 @@ export const infoList = [
     title: 'Languages and Software Skills',
     description: 'Proficient in a range of programming languages and tools.',
     skills: [
-      'HTML5',
-      'CSS3',
+      'HTML',
+      'CSS',
       'JavaScript',
-      'Node.js',
       'React',
+      'Node.js',
       'Next.js',
       'Figma',
       'SQL',
       'Python',
-      'MATLAB',
     ],
   },
   {

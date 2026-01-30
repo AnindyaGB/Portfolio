@@ -6,13 +6,13 @@ import Modal from "./Modal";
 function Card({ project, onClick }) {
   return (
     <div
-      className="bg-white dark:bg-gray-800 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 flex flex-col cursor-pointer"
+      className="bg-white rounded-lg overflow-hidden border border-gray-200 shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-200 flex flex-col cursor-pointer"
       onClick={onClick}
     >
       <div className="p-4 flex-shrink-0">
-        <h5 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{project.title}</h5>
+        <h5 className="text-lg font-semibold text-gray-900">{project.title}</h5>
         {project.subtitle && (
-          <h6 className="text-gray-500 dark:text-gray-400 text-sm mt-1">{project.subtitle}</h6>
+          <h6 className="text-gray-500 text-sm mt-1">{project.subtitle}</h6>
         )}
       </div>
 
@@ -26,7 +26,7 @@ function Card({ project, onClick }) {
         </div>
       )}
       <div className="p-4 flex flex-col flex-grow">
-        {project.text && <p className="text-gray-700 dark:text-gray-300 text-sm flex-grow">{project.text}</p>}
+        {project.text && <p className="text-gray-700 text-sm flex-grow">{project.text}</p>}
       </div>
     </div>
   );
