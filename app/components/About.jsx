@@ -1,11 +1,11 @@
-import { assets, infoList } from '../../assets/assets'
+import { assets } from '../../assets/assets'
 import React from 'react'
 import Image from 'next/image'
 
 export default function About() {
   return (
     <div id='about' className='w-full px-5 sm:px-10 lg:px-[12%] py-10 scroll-mt-20'>
-      <h4 className='text-center mb-2 text-lg font-Ovo'>Introduction</h4>
+      <h4 className='text-center mb-1 text-xs uppercase tracking-widest text-gray-500 font-Ovo'>Introduction</h4>
       <h2 className='text-center text-5xl font-Ovo'>About Me</h2>
 
       <div className='flex w-full flex-col lg:flex-row items-center gap-20 lg:gap-20 my-14'>

@@ -23,6 +23,7 @@ import smc_icon from './smc-icon.png';
 import rexroth_icon from './rexroth-icon.png';
 import li_logo from './li-logo.png';
 import gazatteer from './gazatteer.png'
+import github_icon from './github-icon.png'
 
 export const assets = {
     code_icon,
@@ -49,7 +50,8 @@ export const assets = {
     smc_icon,
     rexroth_icon,
     li_logo,
-    gazatteer
+    gazatteer,
+    github_icon
 };
 
 export const workData = [
@@ -69,8 +71,9 @@ export const workData = [
 export const projects = [
     {
         id: "gazatteer",
-        title: "Gazatteer - Interactive Geospatial Web Application",
-        subtitle: "(React, Leaflet, JavaScript, Web APIs, Vercel)",
+        title: "Gazatteer",
+        subtitle: "Interactive Geospatial Web Application",
+        tags: ["React", "Leaflet", "JavaScript", "Web APIs", "Vercel"],
         text: "Gazatteer is an interactive geospatial web application that allows users to explore countries worldwide and view real-time geographic, demographic, and weather data.",
         image: '/gazatteer.png',
         githubUrl: "https://github.com/you/repo",
@@ -88,8 +91,10 @@ export const projects = [
     },
     {
         id: "company-directory",
-        title: "Company Directory — Full-Stack Web Application",
-        subtitle: "(Next.js, Node.js, PostgreSQL, JavaScript, Vercel)",
+        title: "Company Directory",
+        subtitle: "Full-Stack Web Application",
+        tags: ["Next.js", "Node.js", "PostgreSQL", "JavaScript", "Vercel"],
+
         text: "Company Directory a full-stack company management system supporting CRUD operations for personnel, departments, and locations.",
         image: '/companydirectory.png',
         githubUrl: "https://github.com/you/repo",
@@ -145,7 +150,29 @@ export const serviceData = [
     },
 ]
 
+
 export const infoList = [
-    { icon: assets.code_icon, title: 'Languages and Software Skills', description: 'HTML5, CSS3, Javascript, Node.js, React, Next.js, Figma, SQL, Python, MATLAB' },
-    { icon: assets.edu_icon, title: 'Education', description: 'MEng in Electrical and Mechanical Engineering - The University of Edinburgh (2015)' },
+  {
+    icon: assets.code_icon,
+    title: 'Languages and Software Skills',
+    description: 'Proficient in a range of programming languages and tools.',
+    skills: [
+      'HTML5',
+      'CSS3',
+      'JavaScript',
+      'Node.js',
+      'React',
+      'Next.js',
+      'Figma',
+      'SQL',
+      'Python',
+      'MATLAB',
+    ],
+  },
+  {
+    icon: assets.edu_icon,
+    title: 'Education',
+    description: 'MEng in Electrical and Mechanical Engineering - The University of Edinburgh (2015)',
+    skills: [], // No badges for education
+  },
 ];

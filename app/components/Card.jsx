@@ -2,7 +2,7 @@
 
 import React, {Fragment, useState} from "react";
 import Modal from "./Modal";
-// Card Component
+
 function Card({ project, onClick }) {
   return (
     <div
@@ -25,19 +25,14 @@ function Card({ project, onClick }) {
           />
         </div>
       )}
-            {/* Card Body */}
       <div className="p-4 flex flex-col flex-grow">
         {project.text && <p className="text-gray-700 dark:text-gray-300 text-sm flex-grow">{project.text}</p>}
-
-
       </div>
     </div>
   );
 }
 
 
-
-// Portfolio Grid Component
 export default function cards({ projects }) {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
