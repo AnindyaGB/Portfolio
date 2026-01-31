@@ -22,7 +22,7 @@ import jlr_icon from './jlr-icon.png';
 import smc_icon from './smc-icon.png';
 import rexroth_icon from './rexroth-icon.png';
 import li_logo from './li-logo.png';
-import gazatteer from './gazatteer.png'
+import gazetteer from './gazetteer.png'
 import github_icon from './github-icon.png'
 
 export const assets = {
@@ -50,21 +50,21 @@ export const assets = {
     smc_icon,
     rexroth_icon,
     li_logo,
-    gazatteer,
+    gazetteer,
     github_icon
 };
 
 export const projects = [
     {
-        id: "gazatteer",
-        title: "Gazatteer",
+        id: "gazetteer",
+        title: "Gazetteer",
         subtitle: "Interactive Geospatial Web Application",
         tags: ["React", "Leaflet", "JavaScript", "Web APIs", "Vercel"],
-        text: "Gazatteer is an interactive geospatial web application that allows users to explore countries worldwide and view real-time geographic, demographic, and weather data.",
-        image: '/gazatteer.png',
+        text: "Gazetteer is an interactive geospatial web application that allows users to explore countries worldwide and view real-time geographic, demographic, and weather data.",
+        image: '/gazetteer.png',
         githubUrl: "https://github.com/you/repo",
         links: [
-      { label: "Try it out", href: '/gazatteer' },
+      { label: "Try it out", href: '/gazetteer' },
     ],
         features:[
 'Implemented dynamic data fetching from multiple public APIs and normalized responses for consistent UI rendering.',

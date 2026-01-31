@@ -239,7 +239,7 @@ const Map = () => {
       case 'weather':
         return 'Weather Information';
       case 'about':
-        return 'Gazatteer';
+        return 'Gazetteer';
       default:
         return null;
     }

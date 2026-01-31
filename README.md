@@ -22,8 +22,8 @@ This project uses [`next/font`](https://nextjs.org/docs/app/building-your-applic
 
 
 ## About
-This repository consists of a main protfolio page as well as two project, Gazatteer and Company Directory.
-At a later date Gazatteer and Company directory will both be moved to their own repositories.
+This repository consists of a main protfolio page as well as two project, Gazetteer and Company Directory.
+At a later date Gazetteer and Company directory will both be moved to their own repositories.
 
 ## Portfolio
 A modern, responsive developer portfolio showcasing my projects, technical skills, and experience. Built with performance, accessibility, and clean UI in mind.
@@ -56,12 +56,12 @@ Deployment: Vercel
 
 ● Optimized images using Next.js Image component
 
-## Gazatteer
-Gazatteer is an interactive geospatial web application that allows users to explore countries worldwide and view real-time geographic, demographic, and weather data. 
+## Gazetteer
+Gazetteer is an interactive geospatial web application that allows users to explore countries worldwide and view real-time geographic, demographic, and weather data. 
 
 ✨ Live Demo
 
-https://anindyab.dev/gazatteer
+https://anindyab.dev/gazetteer
 
 
 🛠 Tech Stack

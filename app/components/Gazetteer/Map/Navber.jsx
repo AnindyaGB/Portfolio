@@ -10,7 +10,7 @@ const Navbar = props => {
 
   return (
       <nav className={styles.navbar}>
-          <div className={styles.brand}>Gazatteer</div>
+          <div className={styles.brand}>Gazetteer</div>
           <Select 
           menuPortalTarget={document.body} 
           styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
