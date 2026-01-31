@@ -1,0 +1,143 @@
+.page {
+  width: 100%;
+  padding: 0 20px;
+  background-color: #e2e3e5;
+  min-height: calc(100vh - 60px);
+}
+
+.filterBar {
+  position: sticky;
+  top: 60px;
+  z-index: 100;
+  background: #e2e3e5;
+  padding: 0.75rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.crud {
+  display: flex;
+  gap: 6px;
+}
+
+.filters {
+  display: flex;
+  padding-bottom: 0;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.select {
+  width: 200px;
+  z-index: 2;
+  margin-right: 6px;
+}
+
+.selectpagnation {
+  width: 70px;
+  z-index: 2;
+}
+
+.input {
+  height: 38px;
+  width: 200px;
+  margin-right: 6px;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  min-width: 100%;
+}
+
+.mobileList {
+  display: none;
+}
+
+.emptyState {
+  text-align: center;
+  padding: 2rem;
+  color: #777;
+  font-style: italic;
+  font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+  .page {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .filterBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filters {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+    align-items: center;
+    display: grid;
+  }
+
+  .crud {
+    justify-content: flex-start;
+  }
+
+  .input,
+  .select {
+    width: 100%;
+  }
+
+  .tableWrapper {
+    display: none;
+  }
+
+  .mobileList {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .selectpagnation {
+    display: none !important;
+  }
+
+  .paginationWrapper {
+    display: none;
+  }
+}
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.cardHeader {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardRow {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.cardRow span:first-child {
+  font-weight: 600;
+  color: #555;
+}
+
+.cardActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}

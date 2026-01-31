@@ -54,20 +54,6 @@ export const assets = {
     github_icon
 };
 
-export const workData = [
-    {
-        title: 'Gazatteer',
-        description: 'Interactive Geospatial Web Application',
-        bgImage: '/work-3.png',
-        link: '/Gazatteer'
-    },
-    {
-        title: 'Company Directory',
-        description: 'Full-Stack Web Application',
-        bgImage: '/work-2.png',
-        link: '/CompanyDirectory'
-    },
-]
 export const projects = [
     {
         id: "gazatteer",
@@ -78,7 +64,7 @@ export const projects = [
         image: '/gazatteer.png',
         githubUrl: "https://github.com/you/repo",
         links: [
-      { label: "Try it out", href: '/Gazatteer' },
+      { label: "Try it out", href: '/gazatteer' },
     ],
         features:[
 'Implemented dynamic data fetching from multiple public APIs and normalized responses for consistent UI rendering.',
@@ -98,7 +84,7 @@ export const projects = [
         image: '/companydirectory.png',
         githubUrl: "https://github.com/you/repo",
         links: [
-      { label: "Try it out", href: '/CompanyDirectory' },
+      { label: "Try it out", href: '/companydirectory' },
     ],
      features:[
 '        Designed RESTful APIs in Node.js and implemented PostgreSQL database schema and queries.',

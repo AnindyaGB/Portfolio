@@ -1,0 +1,51 @@
+.pagnation {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+@media (max-width: 480px) {
+  .pagnation li:not(.active) a {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    margin-top: 20px;
+  }
+}
+
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+
+  background-color: #30638d;
+  min-height: 60px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+}
+
+
+.title {
+  color: #F5FFFA;
+  font-size: 1.25rem;
+  white-space: nowrap;
+}
+
+.help {
+  color: white !important;
+}
+
+.help:hover {
+  color: black !important;
+}
+
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .title {
+    font-size: 1rem;
+  }
+}
