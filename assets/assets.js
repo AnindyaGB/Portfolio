@@ -1,9 +1,5 @@
 import code_icon from './code-icon.png';
 import edu_icon from './edu-icon.png';
-import project_icon from './project-icon.png';
-import firebase from './firebase.png';
-import figma from './figma.png';
-import git from './git.png';
 import right_arrow_white from './right-arrow-white.png';
 import logo from './logo.png';
 import mail_icon from './mail_icon.png';
@@ -14,9 +10,7 @@ import header_bg_color from './header-bg-color.png';
 import arrow_icon from './arrow-icon.png';
 import menu_black from './menu-black.png';
 import close_black from './close-black.png';
-import right_arrow from './right-arrow.png';
 import send_icon from './send-icon.png';
-import right_arrow_bold from './right-arrow-bold.png';
 import nctech_icon from './nctech-icon.png';
 import jlr_icon from './jlr-icon.png';
 import smc_icon from './smc-icon.png';
@@ -28,10 +22,6 @@ import github_icon from './github-icon.png'
 export const assets = {
     code_icon,
     edu_icon,
-    project_icon,
-    firebase,
-    figma,
-    git,
     right_arrow_white,
     logo,
     mail_icon,
@@ -42,9 +32,7 @@ export const assets = {
     arrow_icon,
     menu_black,
     close_black,
-    right_arrow,
     send_icon,
-    right_arrow_bold,
     nctech_icon,
     jlr_icon,
     smc_icon,
