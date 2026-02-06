@@ -64,7 +64,7 @@ export const projects = [
         image: '/gazetteer.png',
         githubUrl: "https://github.com/you/repo",
         links: [
-      { label: "Try it out", href: '/gazetteer' },
+      { label: "Try it out", href: 'https://gazetteer.anindyab.dev/' },
     ],
         features:[
 'Implemented dynamic data fetching from multiple public APIs and normalized responses for consistent UI rendering.',
