@@ -1,6 +1,6 @@
 'use client'
 
-import { serviceData } from '../../assets/assets'
+import { experienceData } from '../../assets/assets'
 import Image from 'next/image'
 import React, { useState } from 'react'
 
@@ -19,7 +19,7 @@ export default function Experience() {
       </h2>
 
       <div className="grid grid-cols-1 gap-6 max-w-6xl mx-auto">
-        {serviceData.map(({ icon, title, description, duties }, index) => (
+        {experienceData.map(({ icon, title, description, duties }, index) => (
           <ExperienceCard
             key={index}
             icon={icon}

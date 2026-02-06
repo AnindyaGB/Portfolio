@@ -42,7 +42,7 @@ export const assets = {
     github_icon
 };
 
-export const projects = [
+export const projectsData = [
     {
         id: "gazetteer",
         title: "Gazetteer",
@@ -85,7 +85,8 @@ export const projects = [
         ]
     }
 ];
-export const serviceData = [
+
+export const experienceData = [
     {
         icon: assets.nctech_icon, title: 'Front End Engineer – NCTech, Edinburgh, UK (March 2021 – November 2025)',
         description: 'Working in the geospatial industry, making use of React to contribute to products in an agile environment.',
@@ -124,7 +125,7 @@ export const serviceData = [
 ]
 
 
-export const infoList = [
+export const skillsData = [
   {
     icon: assets.code_icon,
     title: 'Languages and Software Skills',

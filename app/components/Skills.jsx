@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import { infoList } from '../../assets/assets';
+import { skillsData } from '../../assets/assets';
 
 export default function Skills() {
   return (
@@ -14,7 +14,7 @@ export default function Skills() {
       </h2>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-        {infoList.map(({ icon, title, description, skills }, index) => (
+        {skillsData.map(({ icon, title, description, skills }, index) => (
           <div
             key={index}
             className="border-[0.5px] border-gray-400 rounded-xl p-6 
