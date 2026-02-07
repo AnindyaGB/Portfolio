@@ -72,7 +72,7 @@ export const projectsData = [
         image: '/companydirectory.png',
         githubUrl: "https://github.com/you/repo",
         links: [
-      { label: "Try it out", href: '/companydirectory' },
+      { label: "Try it out", href: 'https://companydirectory.anindyab.dev/' },
     ],
      features:[
 '        Designed RESTful APIs in Node.js and implemented PostgreSQL database schema and queries.',
